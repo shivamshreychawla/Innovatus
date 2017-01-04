@@ -22,9 +22,9 @@ namespace WebApplication1.Controllers
         }
 
         // POST: api/Innovatus
-        public InnovatusOrder Post(InnovatusOrder order)
+        public Rootobject Post(InnovatusOrder order)
         {
-            return order;
+            return (new Rootobject() { data = "Test",contextOut=null });
         }
 
         // PUT: api/Innovatus/5
@@ -94,5 +94,18 @@ namespace WebApplication1.Controllers
         public int code { get; set; }
         public string errorType { get; set; }
     }
+
+
+
+    public class Rootobject
+    {
+        public string speech { get; set; }
+        public string displayText { get; set; }
+        public string data { get; set; }
+        public string contextOut { get; set; }
+        public string source { get; set; }
+    }
+
+
 
 }
