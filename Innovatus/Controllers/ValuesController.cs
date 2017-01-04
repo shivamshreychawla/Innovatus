@@ -23,10 +23,9 @@ namespace Innovatus.Controllers
         }
 
         // POST api/values
-        public void Post(InnovatusOrder value)
+        public InnovatusOrder Post(InnovatusOrder value)
         {
-            var aa = value;
-
+            return value;
         }
 
         // PUT api/values/5
