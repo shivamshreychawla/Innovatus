@@ -1,14 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Script.Serialization;
 
 namespace WebApplication1.Controllers
 {
     public class InnovatusController : ApiController
     {
+
+        public static void Log(string logMessage, TextWriter w)
+        {
+            w.Write("\r\nLog Entry : ");
+            w.WriteLine("{0} {1}", DateTime.Now.ToLongTimeString(),
+                DateTime.Now.ToLongDateString());
+            w.WriteLine("  :");
+            w.WriteLine("  :{0}", logMessage);
+            w.WriteLine("-------------------------------");
+        }
+
+     
         // GET: api/Innovatus
         public IEnumerable<string> Get()
         {
@@ -24,7 +38,13 @@ namespace WebApplication1.Controllers
         // POST: api/Innovatus
         public Rootobject Post(InnovatusOrder order)
         {
-            return (new Rootobject() { data = "Test",contextOut=null });
+            var json = new JavaScriptSerializer().Serialize(order);
+            using (StreamWriter w = File.AppendText(System.Web.Hosting.HostingEnvironment.MapPath(@"~/data.txt")))
+            {
+                Log(json, w);
+
+            }
+            return (new Rootobject() { data = "{\"facebook\": {HELLLLLLLLOOOOOO}}", contextOut=null,displayText="Hello From API" });
         }
 
         // PUT: api/Innovatus/5
@@ -37,6 +57,8 @@ namespace WebApplication1.Controllers
         {
         }
     }
+
+
 
 
     public class InnovatusOrder

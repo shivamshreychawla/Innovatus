@@ -23,6 +23,9 @@ C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\bin\Newtonsoft.Json.
 C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\bin\System.Net.Http.Formatting.xml
 C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\bin\System.Web.Http.xml
 C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\bin\System.Web.Http.WebHost.xml
-C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\obj\Release\WebApplication1.csprojResolveAssemblyReference.cache
 C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\obj\Release\WebApplication1.dll
 C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\obj\Release\WebApplication1.pdb
+C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\obj\Release\WebApplication1.csprojResolveAssemblyReference.cache
+C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\bin\Microsoft.Web.Infrastructure.dll
+C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\bin\Swashbuckle.Core.dll
+C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\bin\WebActivatorEx.dll
