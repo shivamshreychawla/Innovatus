@@ -375,16 +375,16 @@ namespace Innovatus.Areas.HelpPage
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Handling the failure by returning the original string.")]
         private static string TryFormatJson(string str)
         {
-            try
-            {
-                object parsedJson = JsonConvert.DeserializeObject(str);
-                return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
-            }
-            catch
-            {
+            //try
+            //{
+            //    object parsedJson = JsonConvert.DeserializeObject(str);
+            //    return JsonConvert.SerializeObject(parsedJson, Formatting.Indented);
+            //}
+            //catch
+            //{
                 // can't parse JSON, return the original string
                 return str;
-            }
+           // }
         }
 
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Handling the failure by returning the original string.")]

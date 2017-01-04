@@ -74,3 +74,4 @@ C:\Users\schaw3\Desktop\Innovatus\Innovatus\Innovatus\bin\Microsoft.Owin.Securit
 C:\Users\schaw3\Desktop\Innovatus\Innovatus\Innovatus\bin\System.Web.Http.Owin.xml
 C:\Users\schaw3\Desktop\Innovatus\Innovatus\Innovatus\obj\Debug\Innovatus.dll
 C:\Users\schaw3\Desktop\Innovatus\Innovatus\Innovatus\obj\Debug\Innovatus.pdb
+C:\Users\schaw3\Desktop\Innovatus\Innovatus\Innovatus\obj\Debug\Innovatus.csprojResolveAssemblyReference.cache
