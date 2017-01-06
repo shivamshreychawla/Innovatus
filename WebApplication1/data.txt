@@ -1,5 +1,1 @@
-
-Log Entry : 3:26:45 PM Wednesday, January 04, 2017
-  :
-  :{"id":"9da0776e-9b7a-48e5-9ae0-9ed90c6817f0","timestamp":"\/Date(1483505679627)\/","result":{"source":"agent","resolvedQuery":"43 Vigyan Vihar Delhi India","action":"Ordervegetables","actionIncomplete":false,"parameters":{"address":"Delhi India","quantity":"Three kg","time":"20:00:00","vegetables":["Onions"]},"contexts":[],"metadata":{"intentId":"e136057f-1dd6-4ff4-a221-1ffcc4f32fe1","webhookUsed":"false","webhookForSlotFillingUsed":"false","intentName":"Order"},"fulfillment":{"speech":"Fantastic!! Three kg Onions will be sent to you at 20:00:00 to your address. Stay Healthy :)","messages":[{"type":0,"speech":"Fantastic!! Three kg Onions will be sent to you at 20:00:00 to your address. Stay Healthy :)"}]},"score":1},"status":{"code":200,"errorType":"success"},"sessionId":"094fde48-1b96-4d99-96b5-e9dc088efc3f"}
--------------------------------
+{"OrderId":"IN575017","emailId":"shivam@aa.com","Product":"Onions","Quantity":"3kg","Price":"25","DateTime":"06-Jan-2017 18:01","Address":"43 Vigyan Vihar Delhi India 110092","currency":"INR"}
