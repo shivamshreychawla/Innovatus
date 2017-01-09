@@ -27,6 +27,14 @@ namespace WebApplication1.Controllers
 
     public class InnovatusController : ApiController
     {
+        public InnovatusController()
+        {
+            priceDictionary.Add("onion", 25);
+            priceDictionary.Add("potato", 20);
+            priceDictionary.Add("tomato", 35);
+
+        }
+        Dictionary<string, int> priceDictionary = new Dictionary<string, int>();
         // GET: api/Innovatus
         public OrderReturnRootobject Get()
         {
@@ -67,12 +75,13 @@ namespace WebApplication1.Controllers
 
                 returnOrder.Address = order.result.resolvedQuery;
                 returnOrder.currency = "INR";
-                returnOrder.DateTime = order.result.parameters.date.ToString("dd-MMM-yyyy HH:MM");
+                returnOrder.DateTime = order.result.parameters.date[0].ToString("dd-MMM-yyyy hh:mm tt");
                 returnOrder.emailId = order.result.parameters.email;
                 returnOrder.OrderId = "IN" + sixDigitNumber;
-                returnOrder.Price = "25";
+                returnOrder.Price = GetPrice(order.result.parameters.vegetables);
                 returnOrder.Product = order.result.parameters.vegetables;
                 returnOrder.Quantity = order.result.parameters.unitweight.amount + order.result.parameters.unitweight.unit;
+
 
                 var json = new JavaScriptSerializer().Serialize(returnOrder);
 
@@ -83,9 +92,9 @@ namespace WebApplication1.Controllers
 
                 return (new Rootobject()
                 {
-                    speech = "Thanks " + order.result.parameters.email + ", " + order.result.parameters.unitweight.amount + order.result.parameters.unitweight.unit + "  " + order.result.parameters.vegetables
-                    + " will be sent to you on  " + order.result.parameters.date.ToString("dd-MMM-yyyy HH:MM")
-                    + "to your address at " + order.result.resolvedQuery + ".  Stay Healthy :)"
+                    speech = "Thanks " + order.result.parameters.email + ", " + order.result.parameters.unitweight.amount + order.result.parameters.unitweight.unit + " " + order.result.parameters.vegetables
+                    + " will be sent to you on " + order.result.parameters.date[0].ToString("dd-MMM-yyyy HH:mm tt")
+                    + " to your address at " + order.result.resolvedQuery + ". Order ID: " + returnOrder.OrderId +  ". Stay Healthy :)"
                     ,
                     displayText = "Hello From API"
                 });
@@ -102,18 +111,27 @@ namespace WebApplication1.Controllers
             }
             else
             {
-                return (new Rootobject() { contextOut = null, displayText = "Hello From API" });
+                //return (new Rootobject() { contextOut = null, displayText = "Hello From API" });
+                return null;
             }
 
 
         }
 
-        static double Celcius(double f)
-        {
-            double c = 5.0 / 9.0 * (f - 32);
 
-            return c;
+        public string GetPrice(string vegetable)
+        {
+            if (vegetable.ToLower().Contains("onion"))
+                return "25";
+            else if (vegetable.ToLower().Contains("tomato"))
+                return "30";
+            else if (vegetable.ToLower().Contains("potato"))
+                return "20";
+            else
+                return "10";
         }
+
+
 
         // PUT: api/Innovatus/5
         public void Put(int id, [FromBody]string value)
@@ -158,7 +176,7 @@ namespace WebApplication1.Controllers
     public class Parameters
     {
         public string Address { get; set; }
-        public DateTime date { get; set; }
+        public DateTime[] date { get; set; }
         public string email { get; set; }
         [JsonProperty(PropertyName = "unit-weight")]
         public UnitWeight unitweight { get; set; }
