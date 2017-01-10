@@ -9,24 +9,15 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Script.Serialization;
+using WebApplication1.Handler;
 
 namespace WebApplication1.Controllers
 {
 
-    public class OrderReturnRootobject
-    {
-        public string OrderId { get; set; }
-        public string emailId { get; set; }
-        public string Product { get; set; }
-        public string Quantity { get; set; }
-        public string Price { get; set; }
-        public string DateTime { get; set; }
-        public string Address { get; set; }
-        public string currency { get; set; }
-    }
-
+    //[Route("api/TEST")]
     public class InnovatusController : ApiController
     {
+        OrderHandler orderHandle = new OrderHandler();
         public InnovatusController()
         {
             priceDictionary.Add("onion", 25);
@@ -35,22 +26,30 @@ namespace WebApplication1.Controllers
 
         }
         Dictionary<string, int> priceDictionary = new Dictionary<string, int>();
-        // GET: api/Innovatus
-        public OrderReturnRootobject Get()
+        List<OrderReturnRootobject> ordersPending = new List<OrderReturnRootobject>();
+        List<OrderReturnRootobject> ordersCompleted = new List<OrderReturnRootobject>();
+        /// <summary>
+        /// this api would return orders
+        /// </summary>
+        /// <param name="orderType"></param>
+        /// <returns></returns>
+        public List<OrderReturnRootobject> Get(string orderType)
         {
-            // Read the file as one string.
-            string text = System.IO.File.ReadAllText(System.Web.Hosting.HostingEnvironment.MapPath(@"~/data.txt"));
-            return new JavaScriptSerializer().Deserialize<OrderReturnRootobject>(text);
+            return orderHandle.AllOrders(orderType);
 
         }
 
+
+        //[ActionName("api/Innovatus/GetAllOrders")]
         // GET: api/Innovatus/5
-        public string Get(int id)
+        //[Route("api/Innovatus/GetAllOrders")]
+        public string Get()
         {
             return "value";
         }
 
-        // POST: api/Innovatus
+
+
         public Rootobject Post(OrderRootobject order)
         {
 
@@ -71,30 +70,23 @@ namespace WebApplication1.Controllers
 
 
                 var returnOrder = new OrderReturnRootobject();
-
-
                 returnOrder.Address = order.result.resolvedQuery;
                 returnOrder.currency = "INR";
                 returnOrder.DateTime = order.result.parameters.date[0].ToString("dd-MMM-yyyy hh:mm tt");
                 returnOrder.emailId = order.result.parameters.email;
                 returnOrder.OrderId = "IN" + sixDigitNumber;
-                returnOrder.Price = GetPrice(order.result.parameters.vegetables);
+                returnOrder.Price = orderHandle.PriceDetails(order.result.parameters.vegetables);
                 returnOrder.Product = order.result.parameters.vegetables;
                 returnOrder.Quantity = order.result.parameters.unitweight.amount + order.result.parameters.unitweight.unit;
-
-
-                var json = new JavaScriptSerializer().Serialize(returnOrder);
-
-                using (StreamWriter w = new StreamWriter(System.Web.Hosting.HostingEnvironment.MapPath(@"~/data.txt")))
-                {
-                    w.WriteLine(json);
-                }
+                ordersPending = orderHandle.AllOrders("ordersPending");
+                ordersPending.Add(returnOrder);
+                orderHandle.WriteOrder(ordersPending, "ordersPending");
 
                 return (new Rootobject()
                 {
                     speech = "Thanks " + order.result.parameters.email + ", " + order.result.parameters.unitweight.amount + order.result.parameters.unitweight.unit + " " + order.result.parameters.vegetables
                     + " will be sent to you on " + order.result.parameters.date[0].ToString("dd-MMM-yyyy HH:mm tt")
-                    + " to your address at " + order.result.resolvedQuery + ". Order ID: " + returnOrder.OrderId +  ". Stay Healthy :)"
+                    + " to your address at " + order.result.resolvedQuery + ". Order ID: " + returnOrder.OrderId + ". Stay Healthy :)"
                     ,
                     displayText = "Hello From API"
                 });
@@ -119,213 +111,41 @@ namespace WebApplication1.Controllers
         }
 
 
-        public string GetPrice(string vegetable)
-        {
-            if (vegetable.ToLower().Contains("onion"))
-                return "25";
-            else if (vegetable.ToLower().Contains("tomato"))
-                return "30";
-            else if (vegetable.ToLower().Contains("potato"))
-                return "20";
-            else
-                return "10";
-        }
-
-
-
         // PUT: api/Innovatus/5
         public void Put(int id, [FromBody]string value)
         {
         }
 
-        // DELETE: api/Innovatus/5
-        public void Delete(int id)
+        /// <summary>
+        /// This api is to delete the orders.
+        /// </summary>
+        /// <param name="orderIds"></param>
+        /// <returns></returns>
+        public HttpResponseMessage Delete(string[] orderIds)
         {
+        
+            if (orderIds != null)
+            {
+                ordersPending = orderHandle.AllOrders("ordersPending");
+                ordersCompleted = orderHandle.AllOrders("ordersCompleted");
+                foreach (var item in orderIds)
+                {
+                    if (ordersPending.Where(x => x.OrderId.ToUpper().Trim() == item.ToUpper().Trim()).Any())
+                    {
+                        var orderCompleted = ordersPending.Where(x => x.OrderId.ToUpper().Trim() == item.ToUpper().Trim()).FirstOrDefault();
+                        ordersPending.Remove(orderCompleted);
+                        ordersCompleted.Add(orderCompleted);
+                    }
+                }
+                orderHandle.WriteOrder(ordersPending, "ordersPending");
+                orderHandle.WriteOrder(ordersCompleted, "ordersCompleted");
+            }
+            var response = new HttpResponseMessage();
+            response.StatusCode = HttpStatusCode.OK;
+            response.Headers.Add("Message", "Succsessfuly Deleted!!!");
+            return response;
+
         }
     }
-
-
-
-
-
-
-
-
-    public class OrderRootobject
-    {
-        public string id { get; set; }
-        public DateTime timestamp { get; set; }
-        public Result result { get; set; }
-        public Status status { get; set; }
-        public string sessionId { get; set; }
-    }
-
-    public class Result
-    {
-        public string source { get; set; }
-        public string resolvedQuery { get; set; }
-        public string action { get; set; }
-        public bool actionIncomplete { get; set; }
-        public Parameters parameters { get; set; }
-        public object[] contexts { get; set; }
-        public Metadata metadata { get; set; }
-        public Fulfillment fulfillment { get; set; }
-        public int score { get; set; }
-    }
-
-    public class Parameters
-    {
-        public string Address { get; set; }
-        public DateTime[] date { get; set; }
-        public string email { get; set; }
-        [JsonProperty(PropertyName = "unit-weight")]
-        public UnitWeight unitweight { get; set; }
-        public string vegetables { get; set; }
-    }
-
-    public class UnitWeight
-    {
-        public int amount { get; set; }
-        public string unit { get; set; }
-    }
-
-    public class Metadata
-    {
-        public string intentId { get; set; }
-        public string webhookUsed { get; set; }
-        public string webhookForSlotFillingUsed { get; set; }
-        public string intentName { get; set; }
-    }
-
-    public class Fulfillment
-    {
-        public string speech { get; set; }
-        public Message[] messages { get; set; }
-    }
-
-    public class Message
-    {
-        public int type { get; set; }
-        public string speech { get; set; }
-        public Payload payload { get; set; }
-    }
-
-    public class Payload
-    {
-        public Facebook facebook { get; set; }
-        public Kik kik { get; set; }
-        public Slack slack { get; set; }
-        public Telegram telegram { get; set; }
-    }
-
-    public class Facebook
-    {
-        public Attachment attachment { get; set; }
-    }
-
-    public class Attachment
-    {
-        public string type { get; set; }
-        public Payload1 payload { get; set; }
-    }
-
-    public class Payload1
-    {
-    }
-
-    public class Kik
-    {
-        public string type { get; set; }
-        public string body { get; set; }
-    }
-
-    public class Slack
-    {
-        public string text { get; set; }
-        public object[] attachments { get; set; }
-    }
-
-    public class Telegram
-    {
-        public string text { get; set; }
-    }
-
-    public class Status
-    {
-        public int code { get; set; }
-        public string errorType { get; set; }
-    }
-
-
-    public class Rootobject
-    {
-        public string speech { get; set; }
-        public string displayText { get; set; }
-        public string data { get; set; }
-        public string contextOut { get; set; }
-        public string source { get; set; }
-    }
-
-
-    public class WeatherObjectRoot
-    {
-        public Coord coord { get; set; }
-        public Weather[] weather { get; set; }
-        public string _base { get; set; }
-        public Main main { get; set; }
-        public int visibility { get; set; }
-        public Wind wind { get; set; }
-        public Clouds clouds { get; set; }
-        public int dt { get; set; }
-        public Sys sys { get; set; }
-        public int id { get; set; }
-        public string name { get; set; }
-        public int cod { get; set; }
-    }
-
-    public class Coord
-    {
-        public float lon { get; set; }
-        public float lat { get; set; }
-    }
-
-    public class Main
-    {
-        public float temp { get; set; }
-        public int pressure { get; set; }
-        public int humidity { get; set; }
-        public float temp_min { get; set; }
-        public float temp_max { get; set; }
-    }
-
-    public class Wind
-    {
-        public float speed { get; set; }
-        public int deg { get; set; }
-    }
-
-    public class Clouds
-    {
-        public int all { get; set; }
-    }
-
-    public class Sys
-    {
-        public int type { get; set; }
-        public int id { get; set; }
-        public float message { get; set; }
-        public string country { get; set; }
-        public int sunrise { get; set; }
-        public int sunset { get; set; }
-    }
-
-    public class Weather
-    {
-        public int id { get; set; }
-        public string main { get; set; }
-        public string description { get; set; }
-        public string icon { get; set; }
-    }
-
 
 }
