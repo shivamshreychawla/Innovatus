@@ -43,25 +43,17 @@ namespace WebApplication1.Controllers
         //[ActionName("api/Innovatus/GetAllOrders")]
         // GET: api/Innovatus/5
         //[Route("api/Innovatus/GetAllOrders")]
-        public string Get()
-        {
-            return "value";
-        }
+        // GET: api/Innovatus/5
+        //public string Get()
+        //{
+        //    return "value";
+        //}
 
 
 
         public Rootobject Post(OrderRootobject order)
         {
 
-            //using (StreamWriter w = File.AppendText(System.Web.Hosting.HostingEnvironment.MapPath(@"~/data.txt")))
-
-
-
-            //if (order.result.resolvedQuery.Contains("Who are"))
-            //{
-            //    string a = "{facebook: {HELLLLLLLLOOOOOO}}";
-            //    return (new Rootobject() { speech = "Shivam and Saurabh Vegetable Shop :)", data = a, contextOut = null, displayText = "Hello From API" });
-            //}
             if (!string.IsNullOrWhiteSpace(order.result.parameters.Address))
             {
                 Random r = new Random();
@@ -77,7 +69,8 @@ namespace WebApplication1.Controllers
                 returnOrder.OrderId = "IN" + sixDigitNumber;
                 returnOrder.Price = orderHandle.PriceDetails(order.result.parameters.vegetables);
                 returnOrder.Product = order.result.parameters.vegetables;
-                returnOrder.Quantity = order.result.parameters.unitweight.amount + order.result.parameters.unitweight.unit;
+                returnOrder.Quantity = order.result.parameters.unitweight.amount.ToString();
+                returnOrder.Unit = order.result.parameters.unitweight.unit;
                 ordersPending = orderHandle.AllOrders("ordersPending");
                 ordersPending.Add(returnOrder);
                 orderHandle.WriteOrder(ordersPending, "ordersPending");
@@ -123,7 +116,7 @@ namespace WebApplication1.Controllers
         /// <returns></returns>
         public HttpResponseMessage Delete(string[] orderIds)
         {
-        
+
             if (orderIds != null)
             {
                 ordersPending = orderHandle.AllOrders("ordersPending");

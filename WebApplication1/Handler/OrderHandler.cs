@@ -60,6 +60,7 @@ namespace WebApplication1.Handler
         public string emailId { get; set; }
         public string Product { get; set; }
         public string Quantity { get; set; }
+        public string Unit { get; set; }
         public string Price { get; set; }
         public string DateTime { get; set; }
         public string Address { get; set; }
