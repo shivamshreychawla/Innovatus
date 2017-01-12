@@ -114,30 +114,27 @@ namespace WebApplication1.Controllers
         /// </summary>
         /// <param name="orderIds"></param>
         /// <returns></returns>
-        public HttpResponseMessage Delete(string[] orderIds)
+        public HttpResponseMessage Delete(string orderid)
         {
-
-            if (orderIds != null)
+            var response = new HttpResponseMessage();
+            ordersPending = orderHandle.AllOrders("ordersPending");
+            ordersCompleted = orderHandle.AllOrders("ordersCompleted");
+            if (!string.IsNullOrEmpty(orderid) && ordersPending.Where(x => x.OrderId.ToUpper().Trim() == orderid.ToUpper().Trim()).Any())
             {
-                ordersPending = orderHandle.AllOrders("ordersPending");
-                ordersCompleted = orderHandle.AllOrders("ordersCompleted");
-                foreach (var item in orderIds)
-                {
-                    if (ordersPending.Where(x => x.OrderId.ToUpper().Trim() == item.ToUpper().Trim()).Any())
-                    {
-                        var orderCompleted = ordersPending.Where(x => x.OrderId.ToUpper().Trim() == item.ToUpper().Trim()).FirstOrDefault();
-                        ordersPending.Remove(orderCompleted);
-                        ordersCompleted.Add(orderCompleted);
-                    }
-                }
+                var orderCompleted = ordersPending.Where(x => x.OrderId.ToUpper().Trim() == orderid.ToUpper().Trim()).FirstOrDefault();
+                ordersPending.Remove(orderCompleted);
+                ordersCompleted.Add(orderCompleted);
                 orderHandle.WriteOrder(ordersPending, "ordersPending");
                 orderHandle.WriteOrder(ordersCompleted, "ordersCompleted");
+                response.StatusCode = HttpStatusCode.OK;
+                response.Headers.Add("Message", "Succsessfuly Deleted!!!");
             }
-            var response = new HttpResponseMessage();
-            response.StatusCode = HttpStatusCode.OK;
-            response.Headers.Add("Message", "Succsessfuly Deleted!!!");
+            else
+            {
+                response.StatusCode = HttpStatusCode.OK;
+                response.Headers.Add("Message", "Nothing to Delete!!!");
+            }
             return response;
-
         }
     }
 
