@@ -70,7 +70,7 @@ namespace WebApplication1.Handler
     public class OrderRootobject
     {
         public string id { get; set; }
-        public DateTime timestamp { get; set; }
+        public DateTime? timestamp { get; set; }
         public Result result { get; set; }
         public Status status { get; set; }
         public string sessionId { get; set; }

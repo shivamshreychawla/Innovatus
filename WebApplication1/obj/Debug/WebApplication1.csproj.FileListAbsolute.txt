@@ -28,3 +28,4 @@ C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\bin\System.Web.Http.
 C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\bin\System.Web.Http.WebHost.xml
 C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\obj\Debug\WebApplication1.dll
 C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\obj\Debug\WebApplication1.pdb
+C:\Users\schaw3\Desktop\Innovatus\Innovatus\WebApplication1\obj\Debug\WebApplication1.csprojResolveAssemblyReference.cache

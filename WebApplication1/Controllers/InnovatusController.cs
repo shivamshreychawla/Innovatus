@@ -56,6 +56,12 @@ namespace WebApplication1.Controllers
 
             if (!string.IsNullOrWhiteSpace(order.result.parameters.Address))
             {
+                var json = new JavaScriptSerializer().Serialize(order);
+                using (StreamWriter w = new StreamWriter(System.Web.Hosting.HostingEnvironment.MapPath(@"~/dump.txt")))
+                {
+                    w.WriteLine(json);
+                }
+
                 Random r = new Random();
                 int randNum = r.Next(1000000);
                 string sixDigitNumber = randNum.ToString("D6");
@@ -64,7 +70,8 @@ namespace WebApplication1.Controllers
                 var returnOrder = new OrderReturnRootobject();
                 returnOrder.Address = order.result.resolvedQuery;
                 returnOrder.currency = "INR";
-                returnOrder.DateTime = order.result.parameters.date[0].ToString("dd-MMM-yyyy hh:mm tt");
+                if (order.result.parameters.date.Count() != 0)
+                    returnOrder.DateTime = order.result.parameters.date[0].ToString("dd-MMM-yyyy hh:mm tt");
                 returnOrder.emailId = order.result.parameters.email;
                 returnOrder.OrderId = "IN" + sixDigitNumber;
                 returnOrder.Price = orderHandle.PriceDetails(order.result.parameters.vegetables);
@@ -75,14 +82,36 @@ namespace WebApplication1.Controllers
                 ordersPending.Add(returnOrder);
                 orderHandle.WriteOrder(ordersPending, "ordersPending");
 
-                return (new Rootobject()
-                {
-                    speech = "Thanks " + order.result.parameters.email + ", " + order.result.parameters.unitweight.amount + order.result.parameters.unitweight.unit + " " + order.result.parameters.vegetables
+
+
+                //var json = new JavaScriptSerializer().Serialize(order);
+                //using (StreamWriter w = new StreamWriter(System.Web.Hosting.HostingEnvironment.MapPath(@"~/dump.txt")))
+                //{
+                //    w.WriteLine(json + "?????????????????" + "Thanks " + order.result.parameters.email + ", " + order.result.parameters.unitweight.amount + order.result.parameters.unitweight.unit + " " + order.result.parameters.vegetables
+                //   + " will be sent to you on " + order.result.parameters.date[0].ToString("dd-MMM-yyyy HH:mm tt")
+                //   + " to your address at " + order.result.resolvedQuery + ". Order ID: " + returnOrder.OrderId + ". Stay Healthy :)");
+                //}
+
+                //return (new Rootobject() { contextOut = null, displayText = "Hello From API" });
+                if (order.result.parameters.date.Count() == 0)
+                    return (new Rootobject()
+                    {
+                        speech = "Thanks " + order.result.parameters.email + ", " + order.result.parameters.unitweight.amount + order.result.parameters.unitweight.unit + " " + order.result.parameters.vegetables
+             + " will be sent"
+             + " to your address at " + order.result.resolvedQuery + ". Order ID: " + returnOrder.OrderId + ". Stay Healthy :)"
+             ,
+                        displayText = "Hello From API"
+                    });
+                else
+
+                    return (new Rootobject()
+                    {
+                        speech = "Thanks " + order.result.parameters.email + ", " + order.result.parameters.unitweight.amount + order.result.parameters.unitweight.unit + " " + order.result.parameters.vegetables
                     + " will be sent to you on " + order.result.parameters.date[0].ToString("dd-MMM-yyyy HH:mm tt")
                     + " to your address at " + order.result.resolvedQuery + ". Order ID: " + returnOrder.OrderId + ". Stay Healthy :)"
                     ,
-                    displayText = "Hello From API"
-                });
+                        displayText = "Hello From API"
+                    });
             }
             else if (order.result.resolvedQuery.Contains("current temperature"))
             {
@@ -96,6 +125,14 @@ namespace WebApplication1.Controllers
             }
             else
             {
+
+
+                var json = new JavaScriptSerializer().Serialize(order);
+                using (StreamWriter w = new StreamWriter(System.Web.Hosting.HostingEnvironment.MapPath(@"~/dump.txt")))
+                {
+                    w.WriteLine(json);
+                }
+
                 //return (new Rootobject() { contextOut = null, displayText = "Hello From API" });
                 return null;
             }
