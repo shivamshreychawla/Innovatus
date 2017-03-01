@@ -97,7 +97,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="data.txt" />
+    <Content Include="dataCompleted.txt" />
+    <Content Include="default.htm" />
+    <Content Include="dump.txt" />
     <Content Include="Global.asax" />
+    <Content Include="miral.png" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
